@@ -23,3 +23,6 @@ Para o funcionamento correto, o executável deve estar acompanhado da pasta tool
 
 ⚠️ Importante:
 Dentro da pasta Essencial, disponibilizamos o arquivo picoflasher_uart.uf2 com integração para leitura UART. Este firmware deve ser instalado no seu Raspberry Pi Pico para que todas as funções do software funcionem corretamente.
+
+Link para Download RGH3 Flasher v.1.0
+https://drive.google.com/file/d/1TbBtUpFMrR3UFRoPKADv-i5RFEdGa6rB/view?usp=sharing
