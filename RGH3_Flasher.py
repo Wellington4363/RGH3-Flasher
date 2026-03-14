@@ -1061,19 +1061,15 @@ class RGH3Studio(ctk.CTk):
             pasta_origem = os.path.abspath(os.path.dirname(self.caminho_nand_atual))
             pasta_raiz_nand = os.path.abspath("nand")
 
-            # Copia a nand para a nova pasta do serial se ela ainda não existir lá
             if not os.path.exists(dest_nand_orig) and self.caminho_nand_atual != dest_nand_orig:
                 shutil.copy2(self.caminho_nand_atual, dest_nand_orig)
 
-            # --- FAXINA INTELIGENTE: LIMPEZA DE PASTA DUPLICADA ---
-            # Se a pasta antiga estiver dentro do nosso BD (nand/) e for diferente da pasta do serial novo, nós a deletamos.
             if pasta_origem.startswith(pasta_raiz_nand) and pasta_origem != p_con_bd and "_temp" not in pasta_origem.lower():
                 try:
                     shutil.rmtree(pasta_origem)
                     self.log_mensagem(f"[SISTEMA] Arquivos gravados na pasta: {id_soberano}")
                 except:
                     pass
-            # ------------------------------------------------------
 
             self.caminho_nand_atual = dest_nand_orig
             self.after(0, lambda: self.lbl_nand_path.configure(text=f"Carregada: {id_soberano}/nanddump.bin", text_color="white"))
