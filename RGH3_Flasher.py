@@ -101,7 +101,7 @@ class RGH3Studio(ctk.CTk):
 
         nome_foto = mapa_fotos.get(placa)
         caminho_base = self._obter_caminho_base()
-        caminho_img = os.path.join(caminho_base, "Essencial", "Diagrama_PicoFlasher_UART", nome_foto)
+        caminho_img = os.path.join(caminho_base, "Essencial", "Diagrama_Pico_UART", nome_foto)
 
         if not os.path.exists(caminho_img):
             messagebox.showerror("Erro", f"Diagrama não encontrado:\n{nome_foto}")
@@ -240,7 +240,7 @@ class RGH3Studio(ctk.CTk):
         self.after(0, lambda: self.lbl_kv_info.configure(text=""))
 
     def _carregar_recursos(self):
-        path_icon = os.path.join("tools", "picoflasher_uart", "picoflasher_uart.png")
+        path_icon = os.path.join("tools", "pico_uart", "pico_uart.png")
         if os.path.exists(path_icon):
             img_pil = Image.open(path_icon)
             self.pico_icon_on = ctk.CTkImage(light_image=img_pil, dark_image=img_pil, size=(200, 90))
@@ -288,9 +288,9 @@ class RGH3Studio(ctk.CTk):
     def _criar_pastas_base(self):
         pastas = [
             "nand", "output", "common/rgh3/Freeboot_2to3/ecc", 
-            "tools/picoflasher_uart", "tools/xebuild", "tools/sound", 
+            "tools/pico_uart", "tools/xebuild", "tools/sound", 
             "tools/img", "common/clean_smc", 
-            "Essencial/Diagrama_PicoFlasher_UART" 
+            "Essencial/Diagrama_Pico_UART" 
         ]
         for pasta in pastas:
             os.makedirs(os.path.abspath(pasta), exist_ok=True)
@@ -618,7 +618,7 @@ class RGH3Studio(ctk.CTk):
                 "Desativa a montagem da memória interna. Salva placas Corona 4GB que estão travando devido ao chip eMMC corrompido ou morto.")
 
             self.chk_nohdmiwait_var = ctk.BooleanVar(value=self.cfg_nohdmiwait)
-            self._criar_item_patch(self.janela_opcoes, "NoHDMIWait (Boot Instante)", self.chk_nohdmiwait_var, 
+            self._criar_item_patch(self.janela_opcoes, "NoHDMIWait (Boot Instantâneo)", self.chk_nohdmiwait_var, 
                 "Força o console a não esperar a resposta do cabo HDMI para iniciar o boot. Acelera a inicialização.")
             
             self.chk_xl_both_var = ctk.BooleanVar(value=self.cfg_xl_both)
@@ -627,7 +627,7 @@ class RGH3Studio(ctk.CTk):
 
             self.chk_nowifi_var = ctk.BooleanVar(value=self.cfg_nowifi)
             self._criar_item_patch(self.janela_opcoes, "NoWiFi (Desativar Sem Fio)", self.chk_nowifi_var, 
-                "Desativa o módulo Wi-Fi a nível de sistema operacional. Útil se o componente físico estiver em curto e travando o videogame.")
+                "Desativa o módulo Wi-Fi a nível de sistema operacional. Útil se o componente físico estiver em curto e travando o console.")
 
             self.chk_nolan_var = ctk.BooleanVar(value=self.cfg_nolan)
             self._criar_item_patch(self.janela_opcoes, "NoLAN (Desativar Cabo Rede)", self.chk_nolan_var, 
@@ -658,10 +658,8 @@ class RGH3Studio(ctk.CTk):
         self.cfg_nolan = self.chk_nolan_var.get()
         self.cfg_nohdd = self.chk_nohdd_var.get()
         self.cfg_xl_both = self.chk_xl_both_var.get()
-
         self.log_mensagem("[SISTEMA] Configurações Avançadas salvas.")
         self.janela_opcoes.destroy()
-
         self.atualizar_tela_temp()
         self.atualizar_tela_dvdkey()
         self.atualizar_tela_patches()
@@ -767,7 +765,7 @@ class RGH3Studio(ctk.CTk):
 
     def identificar_hardware(self):
         self.after(0, lambda: self.combo_placa.set(""))
-        p_exe = os.path.abspath("tools/picoflasher_uart/PicoFlasher_uart.exe")
+        p_exe = os.path.abspath("tools/pico_uart/Pico_uart.exe")
         tmp = os.path.abspath("nand/_temp/check.bin")
         self.log_mensagem("[HARDWARE] Identificando placa..."); os.makedirs(os.path.dirname(tmp), exist_ok=True)
         try:
@@ -821,7 +819,6 @@ class RGH3Studio(ctk.CTk):
             self.cfg_nohdd = False
             self.cfg_xl_both = False
             self._limpar_kv_info()
-            
             self.atualizar_tela_dvdkey()
             self.atualizar_tela_temp()
             self.atualizar_tela_patches()
@@ -907,7 +904,7 @@ class RGH3Studio(ctk.CTk):
         ])
 
         placa = self.combo_placa.get()
-        p_exe = os.path.abspath("tools/picoflasher_uart/PicoFlasher_uart.exe")
+        p_exe = os.path.abspath("tools/pico_uart/Pico_uart.exe")
         tmp_dir = os.path.abspath("nand/_temp"); os.makedirs(tmp_dir, exist_ok=True)
         d1, d2 = os.path.join(tmp_dir, "dump1.bin"), os.path.join(tmp_dir, "dump2.bin")
         for f in [d1, d2]: 
@@ -973,7 +970,7 @@ class RGH3Studio(ctk.CTk):
 
         time.sleep(0.5) 
 
-        p_exe = os.path.abspath("tools/picoflasher_uart/PicoFlasher_uart.exe")
+        p_exe = os.path.abspath("tools/pico_uart/Pico_uart.exe")
         self.log_mensagem(f"[HARDWARE] Gravando Xell ({nome_ecc})...")
         suc, log_cmd = self._executar_comando([p_exe, "-w", c_ecc], com_progresso=True)       
         
@@ -1120,7 +1117,7 @@ class RGH3Studio(ctk.CTk):
         time.sleep(0.5)
 
         self.log_mensagem(f"[HARDWARE] Gravando: {os.path.basename(s_fi)}...")
-        suc, log_cmd = self._executar_comando([os.path.abspath("tools/picoflasher_uart/PicoFlasher_uart.exe"), "-w", s_fi], com_progresso=True)
+        suc, log_cmd = self._executar_comando([os.path.abspath("tools/pico_uart/Pico_uart.exe"), "-w", s_fi], com_progresso=True)
         
         if not suc: self.log_mensagem(f"[ERRO] A gravação falhou! Log: {log_cmd}")
         return suc
@@ -1140,7 +1137,7 @@ class RGH3Studio(ctk.CTk):
         time.sleep(0.5)
 
         self.log_mensagem(f"[HARDWARE] Gravando {os.path.basename(self.caminho_nand_atual)}...")
-        suc, log_cmd = self._executar_comando([os.path.abspath("tools/picoflasher_uart/PicoFlasher_uart.exe"), "-w", self.caminho_nand_atual], com_progresso=True)
+        suc, log_cmd = self._executar_comando([os.path.abspath("tools/pico_uart/Pico_uart.exe"), "-w", self.caminho_nand_atual], com_progresso=True)
         
         if not suc: self.log_mensagem(f"[ERRO] A gravação falhou! Log: {log_cmd}")
         return suc
